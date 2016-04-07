@@ -37,4 +37,32 @@
     .attr('fill', function(d, i) {
       return color(d.data.label);
     });
+
+  var daset = [];
+
+  var addDatum = document.getElementById('add-datum');
+  addDatum.addEventListener('click', function() {
+
+    var label = document.querySelector('[name="label"]').value;
+    var value = parseFloat(document.querySelector('[name="value"]').value);
+
+    if (label && value) {
+      daset.push({
+        label: label,
+        value: value
+      });
+    }
+
+    document.querySelector('[name="label"]').value = null;
+    document.querySelector('[name="value"]').value = null;
+
+    document.getElementById('cache').innerHTML = JSON.stringify(daset);
+
+  });
+
+  var generateChart = document.getElementById('generate-chart');
+  generateChart.addEventListener('click', function() {
+    console.log(daset);
+  });
+
 })(d3);
