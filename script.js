@@ -41,22 +41,49 @@
   var daset = [];
 
   var addDatum = document.getElementById('add-datum');
+
+  function buildDataset(label, value, dataset) {
+    if (label && value) {
+      var index = -1;
+
+      dataset.forEach(function(set, idx) {
+        if (set.label === label) {
+          index = idx;
+        }
+      });
+
+      if (index > -1) {
+        dataset[index].value = value;
+      } else {
+        dataset.push({
+          label: label,
+          value: value
+        });
+      }
+    }
+    return dataset;
+  }
+
+  function cleanFields(fields) {
+    fields.forEach(function(field) {
+      field.value = null;
+    });
+  }
+
+  function writeBuiltObject(dataset) {
+    document.getElementById('cache').innerHTML = JSON.stringify(dataset);
+  }
+
   addDatum.addEventListener('click', function() {
 
     var label = document.querySelector('[name="label"]').value;
     var value = parseFloat(document.querySelector('[name="value"]').value);
 
-    if (label && value) {
-      daset.push({
-        label: label,
-        value: value
-      });
-    }
+    daset = buildDataset(label, value, daset);
 
-    document.querySelector('[name="label"]').value = null;
-    document.querySelector('[name="value"]').value = null;
+    cleanFields([document.querySelector('[name="label"]'), document.querySelector('[name="value"]')]);
 
-    document.getElementById('cache').innerHTML = JSON.stringify(daset);
+    writeBuiltObject(daset);
 
   });
 
