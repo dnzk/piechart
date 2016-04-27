@@ -2,13 +2,6 @@
 
   'use strict';
 
-  var dataset = [
-    { label: 'Abulia', count: 10 },
-    { label: 'Betelgeuse', count: 20 },
-    { label: 'Cantaloupe', count: 30 },
-    { label: 'Djikstra', count: 40 }
-  ];
-
   var width = 360;
   var height = 360;
   var radius = Math.min(width, height) / 2;
@@ -17,33 +10,35 @@
 
   var svg = d3.select('#chart')
     .append('svg')
-    .attr('width', width)
-    .attr('height', height)
-    .append('g')
-    .attr('transform', 'translate(' + (width / 2) + ', ' + (height / 2) + ')');
+      .attr('width', width)
+      .attr('height', height)
+      .append('g')
+        .attr('transform', 'translate(' + (width / 2) + ', ' + (height / 2) + ')');
 
   var arc = d3.svg.arc()
     .outerRadius(radius);
 
   var pie = d3.layout.pie()
-    .value(function(d) { return d.count; })
-    .sort(null);
+    .value(function(d) {
+      return d.count;
+    }).sort(null);
 
   var path = svg.selectAll('path')
-    .data(pie(dataset))
+    .data(pie([{
+      label: '',
+      count: 10
+    }]))
     .enter()
     .append('path')
-    .attr('d', arc)
-    .attr('fill', function(d, i) {
-      return color(d.data.label);
-    });
-
+      .attr('d', arc)
+      .attr('fill', function(d, i) {
+        return color(d.data.label);
+      });
+  
   var daset = [];
 
-  var addDatum = document.getElementById('add-datum');
-
-  function buildDataset(label, value, dataset) {
-    if (label && value) {
+  function buildDataset(label, count, dataset) {
+    if (label && count) {
       var index = -1;
 
       dataset.forEach(function(set, idx) {
@@ -53,11 +48,11 @@
       });
 
       if (index > -1) {
-        dataset[index].value = value;
+        dataset[index].count = count;
       } else {
         dataset.push({
           label: label,
-          value: value
+          count: count
         });
       }
     }
@@ -74,6 +69,8 @@
     document.getElementById('cache').innerHTML = JSON.stringify(dataset);
   }
 
+  var addDatum = document.getElementById('add-datum');
+
   addDatum.addEventListener('click', function() {
 
     var label = document.querySelector('[name="label"]').value;
@@ -88,8 +85,15 @@
   });
 
   var generateChart = document.getElementById('generate-chart');
+
   generateChart.addEventListener('click', function() {
-    console.log(daset);
+    svg.selectAll('path').data(pie(daset))
+      .enter()
+      .append('path')
+      .attr('d', arc)
+      .attr('fill', function(d, i) {
+        return color(d.data.label);
+      });
   });
 
 })(d3);
